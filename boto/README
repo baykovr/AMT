@@ -1,24 +1,14 @@
-#sigh.
+# AMT Voting 
 
-Input file format
+Input :  1 file per letter (x26)
+Format: {A-Z}.imgur
 
-Letter
-Link
-Link
-Link
-
-Letter
-Link
-..
-
+Input file format:
+#{A-Z}
+{link}*
 
 Example:
-A
+#A
 http://imgur.com/y3kU3ff
-http://i.imgur.com/RCHzSn3.png
+http://i.imgur.com/RCHzSn3
 http://imgur.com/xyqXnxq
-
-C
-http://imgur.com/roTrqKI
-http://imgur.com/IQ3bhcK
-http://imgur.com/fFa4tnP
