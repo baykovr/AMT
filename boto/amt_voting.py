@@ -113,6 +113,10 @@ def create_HIT(mturk_conn,letter,imgur_links):
 def main():
 	mturk_conn = connect_AMT()
 	
+	# todo
+	# Load each letter from file
+	# parse each letter file into HIT's of some # (5)
+	# issue HITS
 	img_dict = load_links("A.imgur")
 	create_HIT(mturk_conn,'A',img_dict['A'])
 
