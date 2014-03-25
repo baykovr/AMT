@@ -1,7 +1,19 @@
-#!/bin/sh
-var=`cat input.txt`
+#!/bin/bash
 COUNTER=1
-for i in $var; do
-    wget $i -O "$COUNTER.png" -P /results
+while read line
+do
+	stringarray=($line)
+	n=$(($COUNTER%5))
+    wget ${stringarray[1]} -O "${stringarray[0]}$n.png" -P ./results
 	COUNTER=$[$COUNTER +1]
-done
+done < $1
+
+
+# for line in $var; do
+# 	echo ${line[0]}
+# 	# echo ${a[1]}
+# 	n=$(($COUNTER%5))
+#     # wget ${a[1]} -O "${a[0]}$n.png" -P ./results
+# 	COUNTER=$[$COUNTER +1]
+
+# done
