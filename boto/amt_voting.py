@@ -5,7 +5,7 @@ from boto.mturk.question import QuestionContent,Question,QuestionForm,Overview,A
 
 ACCESS_ID  = 'secret'
 SECRET_KEY = 'secret'
-HOST       = 'mechanicalturk.sandbox.amazonaws.com'
+HOST       = 'mechanicalturk.amazonaws.com'
 
 INFILE     = 'jason_input.txt'
 
@@ -121,7 +121,7 @@ def create_HIT(mturk_conn,letter,imgur_links):
 	
 	#Put the HIT up
 	try:
-		mturk_conn.create_hit(questions=question_form,max_assignments=1,title=title,description=description,keywords=keywords,duration = 60*HIT_TIME,reward=0.01)
+		#mturk_conn.create_hit(questions=question_form,max_assignments=1,title=title,description=description,keywords=keywords,duration = 60*HIT_TIME,reward=0.01)
 		print "Hit issued for item:",letter
 	except Exception as e1:
 		print "Could not issue hit",e1
@@ -156,7 +156,33 @@ def approve_all_hits(mturk_conn):
 			print "Aproving HIT"
 			mturk_conn.approve_assignment(assignment.AssignmentId)
 		
-			
+def list_awaiting_review(mturk_conn):
+    print 'Approving all revieable hits.'
+    page_size = 50
+    hits = mturk_conn.get_reviewable_hits(page_size=page_size)
+    print "Total results to fetch %s " % hits.TotalNumResults
+    print "Request hits page %i" % 1
+    total_pages = float(hits.TotalNumResults)/page_size
+    int_total= int(total_pages)
+    if(total_pages-int_total>0):
+        total_pages = int_total+1
+    else:
+        total_pages = int_total
+    pn = 1
+    while pn < total_pages:
+        pn = pn + 1
+        print "Request hits page %i" % pn
+        temp_hits = mturk_conn.get_reviewable_hits(page_size=page_size,page_number=pn)
+        hits.extend(temp_hits)
+    for hit in hits:
+		assignments = mturk_conn.get_assignments(hit.HITId)
+		print '-'*60
+		print "HIT"
+		print "Hit ID     :",str(hit.HITId)
+		print "Assignments:",len(assignments)
+		for assignment in assignments:
+			print "Worker ID  :",assignment.WorkerId
+					
 def RM_all_hits(mturk_conn):
     print 'Deleting all hits.'
     hits = mturk_conn.get_all_hits()
@@ -180,23 +206,26 @@ def turk():
 		print '-'*60
 		print "Choose task"
 		print "[1] Issue hits from file"
-		print "[2] Approve all hits"
-		print "[3] Delete all hits (no way back)"
-		print "[4] Exit"
+		print "[2] List hits awaiting approval"
+		print "[3] Approve all hits"
+		print "[4] Delete all hits (no way back)"
+		print "[5] Exit"
 		choice = raw_input('#').lower()
 		if choice == "1":
 			print "Using file:",INFILE
 			img_dict = load_links(INFILE)
 			for letter,images in img_dict.items():
 				create_HIT(mturk_conn,letter,images)
-		
 		elif choice == "2":
+			list_awaiting_review(mturk_conn)
+			
+		elif choice == "3":
 			approve_all_hits(mturk_conn)
 		
-		elif choice == "3":
+		elif choice == "4":
 			RM_all_hits(mturk_conn)
 			
-		elif choice == "4":
+		elif choice == "5":
 			exit(0)
 		else:
 			print "unknown input"
