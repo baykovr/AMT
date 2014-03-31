@@ -3,12 +3,13 @@ AMT
 
 __Amazon Makes a Typeface__ for CSCE 438 with Dr. Caverlee
 
-Robert Baykov, William Guerra, and Jason Harris
+Members: Robert Baykov, William Guerra, and Jason Harris
 
 ===
 ## Part 1: Character drawing
 HITs are created to have turkers draw and submit an image of a character (A, B, 7, etc.).
 You can run this part by:
+* Set the MTURK_CMD_HOME environment variable to the /command_line_tools directory of your local clone. Example: `export MTURK_CMD_HOME=~/Documents/Development/amt/command_line_tools` in _~/.bash_profile_
 * Navigate to /command_line_tools/bin
 * Add in your AWS credentials to _mturk.properties_, and ensure the link is set to sandbox, and not production
 * Navigate to /command_line_tools/samples/best_image
