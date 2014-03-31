@@ -21,7 +21,6 @@ You can run this part by:
 	```
 	LETTER  
 	A  
-	
 	B  
 	C  
 	```
