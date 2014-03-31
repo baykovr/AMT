@@ -57,12 +57,14 @@ Input file regular expression:
 (#{A-Z,.?!}\n{link}*\n)*
 
 Example:
+```
 #A
 http://imgur.com/y3kU3ff
 http://i.imgur.com/RCHzSn3
 http://imgur.com/xyqXnxq
 #B
 http://imgur....
+```
 
 
 The url's themselves do not need to be imgur in particular, they do however 
