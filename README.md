@@ -1,13 +1,9 @@
 AMT
 ===
 
-Amazon Makes a Typeface
+__Amazon Makes a Typeface__ for CSCE 438 with Dr. Caverlee
 
-CSCE 438 - Homework 3
-
-Robert Baykov
-William Guerra
-Jason Harris
+Robert Baykov, William Guerra, and Jason Harris
 
 ===
 ## Part 1: Character drawing
