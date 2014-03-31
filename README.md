@@ -29,8 +29,9 @@ Also,
 * approveAndDeleteResults.sh will approve all HITs and delete them from your account
 
 ## Part 2: Voting for the best character
-Turkers are asked to pick the best drawn character out of the results collected from Part 1. Detailed description of this process and how to use it is provided in the README of /boto_voting
+Turkers are asked to pick the best drawn character out of the results collected from Part 1. Detailed description of this process and how to use it is provided in the README of boto_voting
 
 ## Final Product: AMT
 Navigate to the font/ directory to download the final font: AMT.ttf
-Other Formats also available
+
+(Other Formats also available)
