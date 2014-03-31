@@ -217,7 +217,7 @@ def list_all_answers(mturk_conn,img_dict):
 							#print 'letter    ',str(hit_letter)
 							#print 'vote index',index
 							print '[Vote]  ',img_dict[hit_letter][index]
-							#str_to_file('Vote_Results.raw',hit_letter+' '+img_dict[hit_letter][index]+'\n')
+							str_to_file('Vote_Results.raw',hit_letter+' '+img_dict[hit_letter][index]+'\n')
 
 
 def rm_hit_by_titles(mturk_conn,titles):
