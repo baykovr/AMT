@@ -17,12 +17,12 @@ You can run this part by:
 * Add in your AWS credentials to _mturk.properties_, and ensure the link is set to sandbox, and not production
 * Navigate to /command_line_tools/samples/best_image
 * modify best_image.input to include whatever characters you'd like to create HITs for. The example file creates a HIT for A, B, and C with the following format:
-```
-LETTER
-A
-B
-C
-```
+	```
+	LETTER
+	A
+	B
+	C
+	```
 * modify best_image.properties and best_image.question as desired
 * run the run.sh shell script
 
