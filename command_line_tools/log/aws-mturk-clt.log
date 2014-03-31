@@ -3209,3 +3209,23 @@ You may see your HIT(s) with HITTypeId '2PBUB2YU98JH88H74VRFMJ9IOC7MAG' here:
 [2014-03-22 20:40:03] INFO  (LoadHITs.java: 240) - --[Done Loading HITs]----------
 [2014-03-22 20:40:03] INFO  (LoadHITs.java: 241) -   Total load time: 0 seconds.
 [2014-03-22 20:40:03] INFO  (LoadHITs.java: 243) -   Successfully loaded 3 HITs.
+[2014-03-30 21:33:00] INFO  (LoadHITs.java: 193) - --[Initializing]----------
+[2014-03-30 21:33:00] INFO  (LoadHITs.java: 194) -  Input: ../samples/best_image/best_image.input
+[2014-03-30 21:33:00] INFO  (LoadHITs.java: 195) -  Properties: ../samples/best_image/best_image.properties
+[2014-03-30 21:33:00] INFO  (LoadHITs.java: 196) -  Question File: ../samples/best_image/best_image.question
+[2014-03-30 21:33:00] INFO  (LoadHITs.java: 202) -  Preview mode disabled
+[2014-03-30 21:33:02] INFO  (LoadHITs.java: 229) - --[Loading HITs]----------
+[2014-03-30 21:33:02] INFO  (LoadHITs.java: 231) -   Start time: Sun Mar 30 21:33:02 CDT 2014
+[2014-03-30 21:33:02] DEBUG (WorkQueue.java: 53) - Instantiating work queue with 2 threads
+[2014-03-30 21:33:03] INFO  (RequesterService.java: 1548) - Created HIT 1: HITId=3RIHDBQ1NEYFDEVPDKUWHK8XGMKMHX
+[2014-03-30 21:33:03] INFO  (RequesterService.java: 1548) - Created HIT 2: HITId=371Q3BEXDH942U8O33WPT0B841JSZ5
+[2014-03-30 21:33:03] INFO  (RequesterService.java: 1548) - Created HIT 3: HITId=39O6Z4JLX2XVPRPDWGD972F4V5FXVI
+[2014-03-30 21:33:03] INFO  (RequesterService.java: 1592) - 
+You may see your HIT(s) with HITTypeId '30WQ7ZZ0RTNKWLKDI3W8WEV6V7I9HH' here: 
+[2014-03-30 21:33:03] INFO  (RequesterService.java: 1593) - 
+  https://workersandbox.mturk.com/mturk/preview?groupId=30WQ7ZZ0RTNKWLKDI3W8WEV6V7I9HH
+
+[2014-03-30 21:33:03] INFO  (LoadHITs.java: 239) -   End time: Sun Mar 30 21:33:03 CDT 2014
+[2014-03-30 21:33:03] INFO  (LoadHITs.java: 240) - --[Done Loading HITs]----------
+[2014-03-30 21:33:03] INFO  (LoadHITs.java: 241) -   Total load time: 0 seconds.
+[2014-03-30 21:33:03] INFO  (LoadHITs.java: 243) -   Successfully loaded 3 HITs.
