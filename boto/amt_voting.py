@@ -3,8 +3,8 @@
 from boto.mturk.connection import MTurkConnection
 from boto.mturk.question import QuestionContent,Question,QuestionForm,Overview,AnswerSpecification,SelectionAnswer,FormattedContent,Binary
 
-ACCESS_ID  = 'secret'
-SECRET_KEY = 'secret'
+ACCESS_ID  = ''
+SECRET_KEY = ''
 HOST       = 'mechanicalturk.amazonaws.com'
 INFILE     = 'jason_input.txt'
 IMGSIZE    = 'm'
@@ -151,8 +151,12 @@ def approve_all_hits(mturk_conn):
 		for assignment in assignments:
 			print "Worker ID  :",assignment.WorkerId
 			print "Aproving HIT"
-			mturk_conn.approve_assignment(assignment.AssignmentId)
-		
+			print "Status     :",assignment.AssignmentStatus
+			if assignment.AssignmentStatus == 'Submitted':
+				print 'Approving hit'
+				mturk_conn.approve_assignment(assignment.AssignmentId)
+				print '[approved]'
+
 def list_awaiting_review(mturk_conn):
     print 'Approving all revieable hits.'
     page_size = 50
