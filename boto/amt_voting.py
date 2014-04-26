@@ -6,14 +6,11 @@ from boto.mturk.question import QuestionContent,Question,QuestionForm,Overview,A
 ACCESS_ID  = 'secret'
 SECRET_KEY = 'secret'
 HOST       = 'mechanicalturk.amazonaws.com'
-
 INFILE     = 'jason_input.txt'
-
 IMGSIZE    = 'm'
 IMGTYPE    = 'png'
-
-HIT_REWARD = 0.01  #Cost of hit, in cents.
-HIT_TIME   = 30    #Time for each hit (seconds)
+HIT_REWARD = 0.02   #Cost of hit, in cents.
+HIT_TIME   = 240    #Time for each hit (minuets)
 
 def boto_injector(img_links):
 # Extending boto to Binary datatype in SelectionAnswer
@@ -174,6 +171,7 @@ def list_awaiting_review(mturk_conn):
         print "Request hits page %i" % pn
         temp_hits = mturk_conn.get_reviewable_hits(page_size=page_size,page_number=pn)
         hits.extend(temp_hits)
+
     for hit in hits:
 		assignments = mturk_conn.get_assignments(hit.HITId)
 		print '-'*60
@@ -202,6 +200,13 @@ def RM_all_hits(mturk_conn):
 
 def turk():
 	mturk_conn = connect_AMT()
+	print '-'*60
+	print 'HOST         ',HOST   
+	print 'INFILE       ',INFILE     
+	print 'IMGSIZE      ',IMGSIZE   
+	print 'IMGTYPE      ',IMGTYPE    
+	print 'HIT_REWARD(c)',HIT_REWARD
+	print 'HIT_TIME(min)',HIT_TIME 
 	while(True):
 		print '-'*60
 		print "Choose task"
@@ -209,7 +214,8 @@ def turk():
 		print "[2] List hits awaiting approval"
 		print "[3] Approve all hits"
 		print "[4] Delete all hits (no way back)"
-		print "[5] Exit"
+		print "[5] Get Balance"
+		print "[6] Exit"
 		choice = raw_input('#').lower()
 		if choice == "1":
 			print "Using file:",INFILE
@@ -224,8 +230,11 @@ def turk():
 		
 		elif choice == "4":
 			RM_all_hits(mturk_conn)
-			
+		
 		elif choice == "5":
+			print "Balance:",mturk_conn.get_account_balance()
+		
+		elif choice == "6":
 			exit(0)
 		else:
 			print "unknown input"
