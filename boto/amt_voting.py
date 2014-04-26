@@ -3,13 +3,13 @@
 from boto.mturk.connection import MTurkConnection
 from boto.mturk.question import QuestionContent,Question,QuestionForm,Overview,AnswerSpecification,SelectionAnswer,FormattedContent,Binary
 
-ACCESS_ID  = 'secret'
-SECRET_KEY = 'secret'
+ACCESS_ID  = ''
+SECRET_KEY = ''
 HOST       = 'mechanicalturk.amazonaws.com'
 INFILE     = 'jason_input.txt'
 IMGSIZE    = 'm'
 IMGTYPE    = 'png'
-HIT_REWARD = 0.02   #Cost of hit, in cents.
+HIT_REWARD = 0.01   #Cost of hit, in cents.
 HIT_TIME   = 240    #Time for each hit (minuets)
 
 def boto_injector(img_links):
@@ -89,8 +89,8 @@ def create_HIT(mturk_conn,letter,imgur_links):
 	
 	hit = None	
 	#-HIT Properties
-	title      = 'Vote on best looking letter/digit: '+letter
-	description= ('View the images and choose the letter which looks the best')
+	title      = 'Select the Best Character'
+	description= ('Of the available options below, please select the best representation of the following chracter: '+letter+'\n Your vote will help determine which character gets selected to be used in a collaborative typeface.')
 	keywords   = 'image, voting, opinions'	
 	
 	#-Question Overview
@@ -118,7 +118,7 @@ def create_HIT(mturk_conn,letter,imgur_links):
 	
 	#Put the HIT up
 	try:
-		#mturk_conn.create_hit(questions=question_form,max_assignments=1,title=title,description=description,keywords=keywords,duration = 60*HIT_TIME,reward=0.01)
+		mturk_conn.create_hit(questions=question_form,max_assignments=1,title=title,description=description,keywords=keywords,duration = 60*HIT_TIME,reward=0.01)
 		print "Hit issued for item:",letter
 	except Exception as e1:
 		print "Could not issue hit",e1
@@ -154,7 +154,6 @@ def approve_all_hits(mturk_conn):
 			mturk_conn.approve_assignment(assignment.AssignmentId)
 		
 def list_awaiting_review(mturk_conn):
-    print 'Approving all revieable hits.'
     page_size = 50
     hits = mturk_conn.get_reviewable_hits(page_size=page_size)
     print "Total results to fetch %s " % hits.TotalNumResults
@@ -171,32 +170,32 @@ def list_awaiting_review(mturk_conn):
         print "Request hits page %i" % pn
         temp_hits = mturk_conn.get_reviewable_hits(page_size=page_size,page_number=pn)
         hits.extend(temp_hits)
-
-    for hit in hits:
+	for hit in hits:
+		print "HIT----------------------------------------"
 		assignments = mturk_conn.get_assignments(hit.HITId)
 		print '-'*60
-		print "HIT"
 		print "Hit ID     :",str(hit.HITId)
 		print "Assignments:",len(assignments)
 		for assignment in assignments:
+			print "Status     :",assignment.AssignmentStatus
 			print "Worker ID  :",assignment.WorkerId
 					
-def RM_all_hits(mturk_conn):
-    print 'Deleting all hits.'
+def list_all_hits(mturk_conn):
+    print 'Available Hits'
     hits = mturk_conn.get_all_hits()
     for hit in hits:
 		assignments = mturk_conn.get_assignments(hit.HITId)
 		print "HIT----------------------------------------"
+		print hit.Title
+		print hit.Description
 		print "Hit ID     :",str(hit.HITId)
 		print "Assignments:",len(assignments)
 		for assignment in assignments:
 			print "Worker ID  :",assignment.WorkerId
-			print "Aproving HIT"
-			mturk_conn.approve_assignment(assignment.AssignmentId)
-			print "Aproving HIT"
-			mturk_conn.approve_assignment(assignment.AssignmentId)
-		print "DELETED"
-		mturk_conn.disable_hit(hit.HITId)
+			#print "Aproving HIT"
+			#mturk_conn.approve_assignment(assignment.AssignmentId)
+		#print "DELETED"
+		#mturk_conn.disable_hit(hit.HITId)
 
 def turk():
 	mturk_conn = connect_AMT()
@@ -211,9 +210,9 @@ def turk():
 		print '-'*60
 		print "Choose task"
 		print "[1] Issue hits from file"
-		print "[2] List hits awaiting approval"
-		print "[3] Approve all hits"
-		print "[4] Delete all hits (no way back)"
+		print "[2] List all hits"
+		print "[3] List hits awaiting approval"
+		print "[4] Approve all hits"
 		print "[5] Get Balance"
 		print "[6] Exit"
 		choice = raw_input('#').lower()
@@ -223,13 +222,15 @@ def turk():
 			for letter,images in img_dict.items():
 				create_HIT(mturk_conn,letter,images)
 		elif choice == "2":
-			list_awaiting_review(mturk_conn)
+			list_all_hits(mturk_conn)
+			
 			
 		elif choice == "3":
-			approve_all_hits(mturk_conn)
+			list_awaiting_review(mturk_conn)
+			
 		
 		elif choice == "4":
-			RM_all_hits(mturk_conn)
+			approve_all_hits(mturk_conn)
 		
 		elif choice == "5":
 			print "Balance:",mturk_conn.get_account_balance()
