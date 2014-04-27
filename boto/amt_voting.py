@@ -1,10 +1,10 @@
 #robert
-
+import re
 from boto.mturk.connection import MTurkConnection
 from boto.mturk.question import QuestionContent,Question,QuestionForm,Overview,AnswerSpecification,SelectionAnswer,FormattedContent,Binary
 
-ACCESS_ID  = ''
-SECRET_KEY = ''
+ACCESS_ID  = 'secret'
+SECRET_KEY = 'secret'
 HOST       = 'mechanicalturk.amazonaws.com'
 INFILE     = 'jason_input.txt'
 IMGSIZE    = 'm'
@@ -118,31 +118,35 @@ def create_HIT(mturk_conn,letter,imgur_links):
 	
 	#Put the HIT up
 	try:
-		mturk_conn.create_hit(questions=question_form,max_assignments=1,title=title,description=description,keywords=keywords,duration = 60*HIT_TIME,reward=0.01)
+		mturk_conn.create_hit(questions=question_form,max_assignments=5,title=title,description=description,keywords=keywords,duration = 60*HIT_TIME,reward=0.01)
 		print "Hit issued for item:",letter
 	except Exception as e1:
 		print "Could not issue hit",e1
-		
+
+def str_to_file(filename,str_out):
+	fo = open(filename, "a+")
+	fo.write(str_out)
+	fo.close()
 
 def approve_all_hits(mturk_conn):
-    print 'Approving all revieable hits.'
-    page_size = 50
-    hits = mturk_conn.get_reviewable_hits(page_size=page_size)
-    print "Total results to fetch %s " % hits.TotalNumResults
-    print "Request hits page %i" % 1
-    total_pages = float(hits.TotalNumResults)/page_size
-    int_total= int(total_pages)
-    if(total_pages-int_total>0):
-        total_pages = int_total+1
-    else:
-        total_pages = int_total
-    pn = 1
-    while pn < total_pages:
-        pn = pn + 1
-        print "Request hits page %i" % pn
-        temp_hits = mturk_conn.get_reviewable_hits(page_size=page_size,page_number=pn)
-        hits.extend(temp_hits)
-    for hit in hits:
+	print 'Approving all revieable hits.'
+	page_size = 50
+	hits = mturk_conn.get_reviewable_hits(page_size=page_size)
+	print "Total results to fetch %s " % hits.TotalNumResults
+	print "Request hits page %i" % 1
+	total_pages = float(hits.TotalNumResults)/page_size
+	int_total= int(total_pages)
+	if(total_pages-int_total>0):
+		total_pages = int_total+1
+	else:
+		total_pages = int_total
+	pn = 1
+	while pn < total_pages:
+		pn = pn + 1
+		print "Request hits page %i" % pn
+		temp_hits = mturk_conn.get_reviewable_hits(page_size=page_size,page_number=pn)
+		hits.extend(temp_hits)
+	for hit in hits:
 		assignments = mturk_conn.get_assignments(hit.HITId)
 		print '-'*60
 		print "HIT"
@@ -154,48 +158,79 @@ def approve_all_hits(mturk_conn):
 			mturk_conn.approve_assignment(assignment.AssignmentId)
 		
 def list_awaiting_review(mturk_conn):
-    page_size = 50
-    hits = mturk_conn.get_reviewable_hits(page_size=page_size)
-    print "Total results to fetch %s " % hits.TotalNumResults
-    print "Request hits page %i" % 1
-    total_pages = float(hits.TotalNumResults)/page_size
-    int_total= int(total_pages)
-    if(total_pages-int_total>0):
-        total_pages = int_total+1
-    else:
-        total_pages = int_total
-    pn = 1
-    while pn < total_pages:
-        pn = pn + 1
-        print "Request hits page %i" % pn
-        temp_hits = mturk_conn.get_reviewable_hits(page_size=page_size,page_number=pn)
-        hits.extend(temp_hits)
+	page_size = 50
+	hits = mturk_conn.get_reviewable_hits(page_size=page_size)
+	print "Total results to fetch %s " % hits.TotalNumResults
+	print "Request hits page %i" % 1
+	total_pages = float(hits.TotalNumResults)/page_size
+	int_total= int(total_pages)
+	if(total_pages-int_total>0):
+		total_pages = int_total+1
+	else:
+		total_pages = int_total
+	pn = 1
+	while pn < total_pages:
+		pn = pn + 1
+		print "Request hits page %i" % pn
+		temp_hits = mturk_conn.get_reviewable_hits(page_size=page_size,page_number=pn)
+		hits.extend(temp_hits)
 	for hit in hits:
-		print "HIT----------------------------------------"
 		assignments = mturk_conn.get_assignments(hit.HITId)
 		print '-'*60
 		print "Hit ID     :",str(hit.HITId)
+
 		print "Assignments:",len(assignments)
 		for assignment in assignments:
-			print "Status     :",assignment.AssignmentStatus
-			print "Worker ID  :",assignment.WorkerId
+			print "Answers of the worker %s" % assignment.WorkerId
+			print assignment.answers[0][0].fields[0]
+			#print "Status     :",assignment.AssignmentStatus
+			#print "Worker ID  :",assignment.WorkerId
 					
-def list_all_hits(mturk_conn):
-    print 'Available Hits'
-    hits = mturk_conn.get_all_hits()
-    for hit in hits:
-		assignments = mturk_conn.get_assignments(hit.HITId)
-		print "HIT----------------------------------------"
-		print hit.Title
-		print hit.Description
-		print "Hit ID     :",str(hit.HITId)
-		print "Assignments:",len(assignments)
-		for assignment in assignments:
-			print "Worker ID  :",assignment.WorkerId
-			#print "Aproving HIT"
-			#mturk_conn.approve_assignment(assignment.AssignmentId)
+def list_all_answers(mturk_conn,img_dict):
+	print 'Available Hits'
+	hits = mturk_conn.get_all_hits()
+
+	uniq_hits = []
+
+	for hit in hits:
+		if hit.HITId in uniq_hits:
+			pass
+		else:
+			uniq_hits.append(hit.HITId)
+			
+			hit_letter = ''
+			match = re.search(r"chracter: [A-Z0-9.,?!]",hit.Description)
+				
+			if match:
+				hit_letter = match.group(0)[-1]
+
+				assignments = mturk_conn.get_assignments(hit.HITId)
+				for assignment in assignments:
+					if len(assignments) > 0:
+						print "[HIT] ",hit.HITId
+						print "[LTR] ",hit_letter
+						#print "[Dsc] ",hit.Description
+						print "[VC]  ",len(assignments)
+						
+						if hit_letter != '':
+							index = int(assignment.answers[0][0].fields[0])
+							#print 'letter    ',str(hit_letter)
+							#print 'vote index',index
+							print '[Vote]  ',img_dict[hit_letter][index]
+							#str_to_file('Vote_Results.raw',hit_letter+' '+img_dict[hit_letter][index]+'\n')
+
+
+def rm_hit_by_titles(mturk_conn,titles):
+	print 'Available Hits'
+	hits = mturk_conn.get_all_hits()
+	for hit in hits:
+		#print "Hit ID     :",str(hit.HITId)
+		
+		#print hit.Description
 		#print "DELETED"
-		#mturk_conn.disable_hit(hit.HITId)
+		if hit.Title in titles:
+			print '[RM]'+hit.Title
+			mturk_conn.disable_hit(hit.HITId)	
 
 def turk():
 	mturk_conn = connect_AMT()
@@ -209,20 +244,24 @@ def turk():
 	while(True):
 		print '-'*60
 		print "Choose task"
-		print "[1] Issue hits from file"
-		print "[2] List all hits"
-		print "[3] List hits awaiting approval"
-		print "[4] Approve all hits"
+		print "[1] Issue Hits. (from conf)"
+		print "[2] List All Answers."
+		print "[3] List Hits awaiting approval"
+		print "[4] Approve All Hits in Account"
 		print "[5] Get Balance"
-		print "[6] Exit"
+		print "[6] Prune hits matching conf pattern."
+		print "[7] Exit"
+
+		img_dict = load_links(INFILE)
+
 		choice = raw_input('#').lower()
 		if choice == "1":
 			print "Using file:",INFILE
-			img_dict = load_links(INFILE)
+			
 			for letter,images in img_dict.items():
 				create_HIT(mturk_conn,letter,images)
 		elif choice == "2":
-			list_all_hits(mturk_conn)
+			list_all_answers(mturk_conn,img_dict)
 			
 			
 		elif choice == "3":
@@ -236,6 +275,9 @@ def turk():
 			print "Balance:",mturk_conn.get_account_balance()
 		
 		elif choice == "6":
+			titles = ['Describe the image','Categorization','Identify images of people ']
+			rm_hit_by_titles(mturk_conn,titles)
+		elif choice == "7":
 			exit(0)
 		else:
 			print "unknown input"
@@ -252,4 +294,4 @@ def main():
 			
 		
 if __name__ == "__main__":
-    main()
+	main()
